@@ -1,6 +1,16 @@
+// css
+import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
+import "@mantine/charts/styles.css";
+import "./globals.css";
+// mantine
+import { ColorSchemeScript, MantineProvider } from "@mantine/core";
+import { Notifications } from "@mantine/notifications";
+import { ModalsProvider } from "@mantine/modals";
+import { theme } from "@/theme";
+// other
 import type { Metadata } from "next";
 import { geistSans, geistMono } from "@/fonts/fonts";
-import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -13,8 +23,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <ColorSchemeScript />
+      </head>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <MantineProvider theme={theme}>
+          <Notifications />
+          <ModalsProvider>{children}</ModalsProvider>
+        </MantineProvider>
+      </body>
     </html>
   );
 }
