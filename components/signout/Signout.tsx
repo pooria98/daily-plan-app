@@ -11,7 +11,7 @@ export default function Signout({ ...props }: ButtonProps) {
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          router.push("/login"); // redirect to login page
+          router.push("/signin"); // redirect to signin page
         },
       },
     });

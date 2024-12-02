@@ -1,0 +1,19 @@
+.sunIcon {
+  @mixin light {
+    display: block;
+  }
+
+  @mixin dark {
+    display: none;
+  }
+}
+
+.moonIcon {
+  @mixin light {
+    display: none;
+  }
+
+  @mixin dark {
+    display: block;
+  }
+}

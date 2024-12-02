@@ -1,0 +1,21 @@
+.navlink {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1 1 0%;
+  color: light-dark(black, white);
+  background-color: light-dark(var(--mantine-color-gray-3), var(--mantine-color-gray-8));
+
+  &:hover {
+    background-color: light-dark(var(--mantine-color-gray-4), var(--mantine-color-gray-7));
+  }
+
+  &.active {
+    color: white;
+    background-color: var(--mantine-primary-color-filled);
+
+    &:hover {
+      background-color: var(--mantine-primary-color-filled);
+    }
+  }
+}
