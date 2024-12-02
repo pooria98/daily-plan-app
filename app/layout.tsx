@@ -29,7 +29,7 @@ export default function RootLayout({
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <MantineProvider theme={theme}>
-          <Notifications />
+          <Notifications position="top-right" autoClose={10000} />
           <ModalsProvider>{children}</ModalsProvider>
         </MantineProvider>
       </body>

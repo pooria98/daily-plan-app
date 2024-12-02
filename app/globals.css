@@ -2,20 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+.auth-container {
+  @apply min-h-[100dvh] w-full max-w-[400px] mx-auto flex justify-center items-center;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.auth-form {
+  @apply w-full p-4 rounded-lg sm:border sm:shadow-lg flex flex-col gap-3;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+.auth-header {
+  @apply text-center text-xl font-bold mb-10;
 }
