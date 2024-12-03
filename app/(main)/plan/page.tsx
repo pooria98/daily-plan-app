@@ -93,6 +93,7 @@ export default function PlanPage() {
           {fields}
           <Group justify="space-between" mt="md">
             <Button
+              variant="outline"
               onClick={() =>
                 form.insertListItem("activities", { title: "", hour: 0, key: randomId() })
               }
