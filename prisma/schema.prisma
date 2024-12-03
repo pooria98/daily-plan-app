@@ -72,3 +72,19 @@ model Verification {
 
   @@map("verification")
 }
+
+model Plan {
+  id         String     @id @default(cuid())
+  name       String     @unique
+  createdAt  DateTime   @default(now())
+  activities PlanItem[]
+}
+
+model PlanItem {
+  id        String   @id @default(cuid())
+  title     String   @unique
+  hour      Int
+  createdAt DateTime @default(now())
+  planId    String
+  plan      Plan     @relation(fields: [planId], references: [id])
+}

@@ -11,6 +11,7 @@ import { theme } from "@/theme";
 // other
 import type { Metadata } from "next";
 import { geistSans, geistMono } from "@/fonts/fonts";
+import QueryProvider from "@/providers/QueryClientProvider/QueryProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -28,10 +29,12 @@ export default function RootLayout({
         <ColorSchemeScript />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <MantineProvider theme={theme}>
-          <Notifications position="top-right" autoClose={10000} />
-          <ModalsProvider>{children}</ModalsProvider>
-        </MantineProvider>
+        <QueryProvider>
+          <MantineProvider theme={theme}>
+            <Notifications position="top-right" autoClose={10000} />
+            <ModalsProvider>{children}</ModalsProvider>
+          </MantineProvider>
+        </QueryProvider>
       </body>
     </html>
   );
