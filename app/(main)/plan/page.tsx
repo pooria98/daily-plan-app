@@ -33,16 +33,19 @@ export default function PlanPage() {
     <div key={index} className="flex flex-wrap items-center gap-2 mb-2">
       <TextInput
         placeholder="Title"
-        className="flex-[1_1_250px]"
+        className="flex-[1_1_200px]"
         key={form.key(`activities.${index}.title`)}
         {...form.getInputProps(`activities.${index}.title`)}
       />
       <NumberInput
+        rightSection="h"
+        step={0.5}
+        min={0}
+        max={24}
         hideControls
-        className="flex-[0_1_60px]"
+        className="flex-[0_1_70px]"
         key={form.key(`activities.${index}.hour`)}
         {...form.getInputProps(`activities.${index}.hour`)}
-        suffix="h"
       />
       <ActionIcon color="red" size="lg" onClick={() => form.removeListItem("activities", index)}>
         <FaTrash size="1rem" />
@@ -57,7 +60,7 @@ export default function PlanPage() {
     isError,
     isSuccess,
   } = useQuery({
-    queryKey: ["plans"],
+    queryKey: ["plan"],
     queryFn: async () => {
       const response = await axiosInstance.get("/plan");
       return response.data;

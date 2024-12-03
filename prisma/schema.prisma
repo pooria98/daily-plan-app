@@ -83,7 +83,7 @@ model Plan {
 model PlanItem {
   id        String   @id @default(cuid())
   title     String   @unique
-  hour      Int
+  hour      Float
   createdAt DateTime @default(now())
   planId    String
   plan      Plan     @relation(fields: [planId], references: [id])
