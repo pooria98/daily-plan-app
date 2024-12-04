@@ -7,7 +7,7 @@ export interface ApiError extends Error {
 }
 
 export interface Plan {
-  name: string;
+  name?: string;
   activities: {
     title: string;
     hour: number | undefined;

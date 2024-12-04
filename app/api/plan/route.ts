@@ -1,15 +1,31 @@
 import { prisma } from "@/prisma/prisma";
 import { Plan } from "@/types/types";
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/auth";
+import { headers } from "next/headers";
 
 export const GET = async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(), // you need to pass the headers object.
+  });
+
+  if (!session) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
   try {
     const plan = await prisma.plan.findFirst({
-      where: { name: "dafault_plan" },
+      where: { name: "dafault_plan", userId: session?.user.id },
       include: { activities: true },
     });
-    if (!plan) {
-      return NextResponse.json({ error: "Plan not found" }, { status: 404 });
+    if (!plan && session) {
+      const newPlan = await prisma.plan.create({
+        data: {
+          name: "dafault_plan",
+          userId: session?.user.id,
+        },
+      });
+      return NextResponse.json(newPlan);
     }
     return NextResponse.json(plan);
   } catch (error) {
@@ -18,16 +34,25 @@ export const GET = async () => {
 };
 
 export const POST = async (request: NextRequest) => {
-  const { activities, name }: Plan = await request.json();
+  const session = await auth.api.getSession({
+    headers: await headers(), // you need to pass the headers object.
+  });
 
-  if (!activities || !name) {
+  if (!session) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
+  const id = request.nextUrl.searchParams.get("id");
+  const { activities }: Plan = await request.json();
+
+  if (!activities || !id) {
     return NextResponse.json({ error: "Missing data" }, { status: 400 });
   }
 
   try {
     await prisma.planItem.deleteMany();
     await prisma.plan.update({
-      where: { name: name },
+      where: { id },
       data: {
         activities: {
           create: activities.map((activity) => ({

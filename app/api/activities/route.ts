@@ -1,11 +1,21 @@
+import { auth } from "@/auth";
 import { prisma } from "@/prisma/prisma";
 import { Activities } from "@/types/types";
+import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(), // you need to pass the headers object.
+  });
+
+  if (!session) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
   try {
     const activities = await prisma.activity.findMany({
-      where: { createdAt: { lt: new Date() } },
+      where: { createdAt: { lt: new Date() }, userId: session?.user.id },
       orderBy: { createdAt: "desc" },
     });
     if (!activities) {
@@ -18,9 +28,17 @@ export const GET = async () => {
 };
 
 export const POST = async (request: NextRequest) => {
+  const session = await auth.api.getSession({
+    headers: await headers(), // you need to pass the headers object.
+  });
+
+  if (!session) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
   const { name, hour }: Activities = await request.json();
 
-  if (!name || !hour) {
+  if (!name || !hour || !session) {
     return NextResponse.json({ error: "Missing data" }, { status: 400 });
   }
 
@@ -29,6 +47,7 @@ export const POST = async (request: NextRequest) => {
       data: {
         name: name,
         hour: hour,
+        userId: session?.user.id,
       },
     });
     return NextResponse.json({ message: "activity created successfully" });
@@ -38,6 +57,14 @@ export const POST = async (request: NextRequest) => {
 };
 
 export const DELETE = async (request: NextRequest) => {
+  const session = await auth.api.getSession({
+    headers: await headers(), // you need to pass the headers object.
+  });
+
+  if (!session) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
   const id = request.nextUrl.searchParams.get("id");
   if (!id) {
     return NextResponse.json({ error: "Missing data" }, { status: 400 });
@@ -56,6 +83,14 @@ export const DELETE = async (request: NextRequest) => {
 };
 
 export const PUT = async (request: NextRequest) => {
+  const session = await auth.api.getSession({
+    headers: await headers(), // you need to pass the headers object.
+  });
+
+  if (!session) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
   const id = request.nextUrl.searchParams.get("id");
   const { name, hour }: Activities = await request.json();
 

@@ -24,7 +24,6 @@ export default function PlanPage() {
   const form = useForm({
     mode: "controlled",
     initialValues: {
-      name: "",
       activities: [{ title: "", hour: undefined }],
     },
   });
@@ -78,7 +77,7 @@ export default function PlanPage() {
   const { mutate, isPending } = useMutation({
     mutationKey: ["plan"],
     mutationFn: async (values: Plan) => {
-      await axiosInstance.post("/plan", values);
+      await axiosInstance.post("/plan", values, { params: { id: plans?.id } });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["plan"] });

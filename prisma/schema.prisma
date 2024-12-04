@@ -14,17 +14,18 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String     @id @default(cuid())
   name          String
-  email         String
+  email         String     @unique
   emailVerified Boolean
   image         String?
-  createdAt     DateTime
-  updatedAt     DateTime
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
   Session       Session[]
   Account       Account[]
+  plans         Plan[]
+  activities    Activity[]
 
-  @@unique([email])
   @@map("user")
 }
 
@@ -75,18 +76,24 @@ model Verification {
 
 model Plan {
   id         String     @id @default(cuid())
-  name       String     @unique
+  name       String
   createdAt  DateTime   @default(now())
   activities PlanItem[]
+  userId     String
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([name, userId]) // Ensures each user has unique plan names
 }
 
 model PlanItem {
   id        String   @id @default(cuid())
-  title     String   @unique
+  title     String
   hour      Float
   createdAt DateTime @default(now())
   planId    String
-  plan      Plan     @relation(fields: [planId], references: [id])
+  plan      Plan     @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@unique([title, planId]) // Ensures unique titles within a plan
 }
 
 model Activity {
@@ -94,4 +101,8 @@ model Activity {
   name      String
   hour      Float
   createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([name, userId]) // Ensures unique activity names per user
 }
