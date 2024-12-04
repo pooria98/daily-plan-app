@@ -13,3 +13,10 @@
 .auth-header {
   @apply text-center text-xl font-bold mb-10;
 }
+
+/* mantine input */
+.read-only {
+  &:focus {
+    border-color: var(--mantine-color-default-border);
+  }
+}

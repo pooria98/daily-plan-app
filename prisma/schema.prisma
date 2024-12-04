@@ -88,3 +88,10 @@ model PlanItem {
   planId    String
   plan      Plan     @relation(fields: [planId], references: [id])
 }
+
+model Activity {
+  id        String   @id @default(cuid())
+  name      String
+  hour      Float
+  createdAt DateTime @default(now())
+}

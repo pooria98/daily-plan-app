@@ -32,7 +32,7 @@ export const POST = async (request: NextRequest) => {
         activities: {
           create: activities.map((activity) => ({
             title: activity.title,
-            hour: activity.hour,
+            hour: activity.hour ?? 0,
           })),
         },
       },

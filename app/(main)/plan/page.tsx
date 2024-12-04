@@ -25,7 +25,7 @@ export default function PlanPage() {
     mode: "controlled",
     initialValues: {
       name: "",
-      activities: [{ title: "", hour: 0 }],
+      activities: [{ title: "", hour: undefined }],
     },
   });
 
@@ -36,6 +36,7 @@ export default function PlanPage() {
         className="flex-[1_1_200px]"
         key={form.key(`activities.${index}.title`)}
         {...form.getInputProps(`activities.${index}.title`)}
+        required
       />
       <NumberInput
         rightSection="h"
@@ -46,6 +47,7 @@ export default function PlanPage() {
         className="flex-[0_1_70px]"
         key={form.key(`activities.${index}.hour`)}
         {...form.getInputProps(`activities.${index}.hour`)}
+        required
       />
       <ActionIcon color="red" size="lg" onClick={() => form.removeListItem("activities", index)}>
         <FaTrash size="1rem" />
@@ -88,7 +90,8 @@ export default function PlanPage() {
   });
 
   return (
-    <div className="relative w-full max-w-[600px] min-h-[600px] mx-auto flex justify-center items-center">
+    <div className="relative w-full max-w-[600px] min-h-[600px] mx-auto flex flex-col justify-center items-center">
+      <h1 className="text-xl font-semibold mb-4">Daily Plan</h1>
       <LoadingOverlay visible={isLoading || isPending} />
       {isError && <p>{(error as ApiError)?.response?.data?.error}</p>}
       {isSuccess && (
@@ -98,19 +101,19 @@ export default function PlanPage() {
             <Button
               variant="outline"
               onClick={() =>
-                form.insertListItem("activities", { title: "", hour: 0, key: randomId() })
+                form.insertListItem("activities", { title: "", hour: undefined, key: randomId() })
               }
             >
               Add activity
             </Button>
             <p
               className={`${
-                form.getValues().activities.reduce((a, b) => a + b.hour, 0) > 24
+                form.getValues().activities.reduce((a, b) => a + b.hour!, 0) > 24
                   ? "text-red-500"
                   : ""
-              }`}
+              } text-sm font-semibold`}
             >
-              SUM: {form.getValues().activities.reduce((a, b) => a + b.hour, 0)}
+              SUM: {form.getValues().activities.reduce((a, b) => a + b.hour!, 0)}
             </p>
           </Group>
           <Divider my="xs" />

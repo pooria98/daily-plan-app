@@ -10,6 +10,13 @@ export interface Plan {
   name: string;
   activities: {
     title: string;
-    hour: number;
+    hour: number | undefined;
   }[];
+}
+
+export interface Activities {
+  id?: string;
+  name: string;
+  hour: number;
+  createdAt?: Date;
 }
