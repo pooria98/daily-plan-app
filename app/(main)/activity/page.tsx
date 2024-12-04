@@ -1,17 +1,25 @@
 "use client";
 import axiosInstance from "@/lib/axios-config";
 import { Activities, ApiError } from "@/types/types";
-import { ActionIcon, Button, Divider, LoadingOverlay, NumberInput, TextInput } from "@mantine/core";
+import {
+  ActionIcon,
+  Autocomplete,
+  Button,
+  Divider,
+  LoadingOverlay,
+  NumberInput,
+  TextInput,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaCheck, FaTrash, FaX } from "react-icons/fa6";
 import { FaEdit } from "react-icons/fa";
 import { notifications } from "@mantine/notifications";
 
 export default function ActivityPage() {
   const queryClient = useQueryClient();
-
+  const [names, setNames] = useState<string[]>([]);
   const [isEditing, setIsEditing] = useState("");
   const [editValues, setEditValues] = useState<Activities>({
     name: "",
@@ -31,13 +39,20 @@ export default function ActivityPage() {
     isLoading,
     isError,
     isSuccess,
-  } = useQuery({
+  } = useQuery<Activities[]>({
     queryKey: ["activities"],
     queryFn: async () => {
       const response = await axiosInstance.get("/activities");
       return response.data;
     },
   });
+
+  useEffect(() => {
+    if (isSuccess) {
+      const uniqueNames: string[] = [...new Set(activities.map((item: Activities) => item.name))];
+      setNames(uniqueNames);
+    }
+  }, [activities, isSuccess]);
 
   const { mutate: postMutate } = useMutation({
     mutationKey: ["activity", "post"],
@@ -97,7 +112,8 @@ export default function ActivityPage() {
         onSubmit={form.onSubmit((values) => postMutate(values))}
         className="w-full flex flex-wrap items-center gap-2 mb-2"
       >
-        <TextInput
+        <Autocomplete
+          data={names}
           className="flex-[1_1_200px]"
           placeholder="Title"
           key={form.key("name")}
