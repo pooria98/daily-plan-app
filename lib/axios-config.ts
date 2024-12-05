@@ -2,7 +2,7 @@ import axios from "axios";
 import { notifications } from "@mantine/notifications";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:3000/api",
+  baseURL: process.env.AXIOS_BASE_URL,
 });
 
 axiosInstance.interceptors.response.use(
