@@ -7,13 +7,13 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.response.use(
   (response) => {
-    console.log("Response:", response); // Log the response
+    // console.log("Response:", response); // Log the response
     return response; // Pass the response through
   },
   async (error) => {
     // show errors and notifications
     console.error(error);
-    if (error?.response?.data) {
+    if (error?.response?.data.error) {
       notifications.show({
         color: "red",
         title: `${error?.status}: ${error?.code}`,
@@ -23,7 +23,7 @@ axiosInstance.interceptors.response.use(
       notifications.show({
         color: "red",
         title: "Error",
-        message: error.message || error,
+        message: "Error",
       });
     }
     return Promise.reject(error); // Reject the error if it cannot be handled

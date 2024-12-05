@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { DonutChart, DonutChartCell } from "@mantine/charts";
 import { Activities } from "@/types/types";
 import { useEffect, useState } from "react";
-import { Group } from "@mantine/core";
+import { Group, LoadingOverlay } from "@mantine/core";
 
 const mantineColors = [
   "cyan",
@@ -27,7 +27,7 @@ export default function StatsPage() {
   const [earliestDate, setEarliestDate] = useState<Date | undefined>(undefined);
   const [totalTime, setTotalTime] = useState<string | undefined>(undefined);
 
-  const { data, isSuccess } = useQuery<Activities[]>({
+  const { data, isSuccess, isLoading } = useQuery<Activities[]>({
     queryKey: ["stats"],
     queryFn: async () => {
       const response = await axiosInstance.get("/stats");
@@ -36,7 +36,7 @@ export default function StatsPage() {
   });
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess && data.length > 0) {
       // set chart data
       const chartData = data.map((item, index) => ({
         name: item.name,
@@ -52,22 +52,36 @@ export default function StatsPage() {
         } else {
           return current;
         }
-      });
+      }, data[0]);
       const dateString = earliestActivity?.createdAt;
       const dateObject = new Date(dateString!);
       setEarliestDate(dateObject);
 
       // set total time
       const milliseconds = new Date().getTime() - dateObject.getTime();
+      const minutes = Math.floor(milliseconds / (1000 * 60)) % 60;
       const hours = Math.floor(milliseconds / (1000 * 60 * 60)) % 24;
       const days = Math.floor(milliseconds / (1000 * 60 * 60 * 24));
-      setTotalTime(`${days} days, ${hours} hours`);
+      if (days <= 0) {
+        if (hours <= 0) {
+          setTotalTime(`${minutes} minutes`);
+        } else {
+          setTotalTime(`${hours} hours`);
+        }
+      } else {
+        setTotalTime(`${days} days`);
+      }
+    } else {
+      setChartData([]);
+      setEarliestDate(undefined);
+      setTotalTime(undefined);
     }
   }, [isSuccess, data]);
 
   return (
     <div className="relative w-full max-w-[600px] min-h-[600px] mx-auto flex flex-col justify-start pt-20">
-      <h1 className="text-2xl font-semibold mb-10 text-center">Lifetime Stats</h1>
+      <LoadingOverlay visible={isLoading} overlayProps={{ bg: "transparent", blur: 5 }} />
+      <h1 className="text-2xl font-semibold mb-10">Lifetime Stats</h1>
       <div className=" mb-8 flex flex-col gap-2">
         <p>
           First activity:{" "}

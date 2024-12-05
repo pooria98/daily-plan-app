@@ -91,7 +91,10 @@ export default function PlanPage() {
   return (
     <div className="relative w-full max-w-[600px] min-h-[600px] mx-auto flex flex-col justify-center items-center">
       <h1 className="text-xl font-semibold mb-4">Daily Plan</h1>
-      <LoadingOverlay visible={isLoading || isPending} />
+      <LoadingOverlay
+        visible={isLoading || isPending}
+        overlayProps={{ bg: "transparent", blur: 5 }}
+      />
       {isError && <p>{(error as ApiError)?.response?.data?.error}</p>}
       {isSuccess && (
         <form onSubmit={form.onSubmit((values) => mutate(values))}>

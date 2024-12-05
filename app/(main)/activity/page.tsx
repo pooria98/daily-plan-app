@@ -54,7 +54,7 @@ export default function ActivityPage() {
     }
   }, [activities, isSuccess]);
 
-  const { mutate: postMutate } = useMutation({
+  const { mutate: postMutate, isPending: postPending } = useMutation({
     mutationKey: ["activity", "post"],
     mutationFn: async (values: Activities) => {
       const response = await axiosInstance.post("/activities", values);
@@ -62,6 +62,7 @@ export default function ActivityPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["activities"] });
+      queryClient.invalidateQueries({ queryKey: ["stats"] });
       form.reset();
       notifications.show({
         color: "green",
@@ -71,7 +72,7 @@ export default function ActivityPage() {
     },
   });
 
-  const { mutate: deleteMutate } = useMutation({
+  const { mutate: deleteMutate, isPending: deletetPending } = useMutation({
     mutationKey: ["activity", "delete"],
     mutationFn: async (id: string) => {
       const response = await axiosInstance.delete(`/activities`, { params: { id } });
@@ -79,6 +80,7 @@ export default function ActivityPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["activities"] });
+      queryClient.invalidateQueries({ queryKey: ["stats"] });
       notifications.show({
         color: "green",
         title: "Success",
@@ -87,7 +89,7 @@ export default function ActivityPage() {
     },
   });
 
-  const { mutate: editMutate } = useMutation({
+  const { mutate: editMutate, isPending: editPending } = useMutation({
     mutationKey: ["activity", "put"],
     mutationFn: async (id: string) => {
       const response = await axiosInstance.put(`/activities`, editValues, { params: { id } });
@@ -95,6 +97,7 @@ export default function ActivityPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["activities"] });
+      queryClient.invalidateQueries({ queryKey: ["stats"] });
       setIsEditing("");
       notifications.show({
         color: "green",
@@ -106,7 +109,10 @@ export default function ActivityPage() {
 
   return (
     <div className="relative w-full max-w-[600px] min-h-[600px] mx-auto flex flex-col justify-start items-center pt-40">
-      <LoadingOverlay visible={isLoading} />
+      <LoadingOverlay
+        visible={isLoading || postPending || editPending || deletetPending}
+        overlayProps={{ bg: "transparent", blur: 5 }}
+      />
       <h1 className="text-xl font-semibold mb-4">Add activity</h1>
       <form
         onSubmit={form.onSubmit((values) => postMutate(values))}

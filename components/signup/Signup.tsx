@@ -24,7 +24,12 @@ export default function Signup() {
       password: "",
     },
     validate: {
-      name: (value) => (value.length < 3 ? "must be at least 2 characters" : null),
+      name: (value) =>
+        value.length < 3
+          ? "must be at least 2 characters"
+          : value.length > 20
+          ? "must be less than 20 characters"
+          : null,
     },
   });
 
