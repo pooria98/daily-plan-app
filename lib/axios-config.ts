@@ -2,12 +2,12 @@ import axios from "axios";
 import { notifications } from "@mantine/notifications";
 
 const axiosInstance = axios.create({
-  baseURL: process.env.AXIOS_BASE_URL,
+  baseURL: process.env.NEXT_PUBLIC_AXIOS_BASE_URL,
 });
 
 axiosInstance.interceptors.response.use(
   (response) => {
-    // console.log("Response:", response); // Log the response
+    console.log("Response:", response); // Log the response
     return response; // Pass the response through
   },
   async (error) => {
