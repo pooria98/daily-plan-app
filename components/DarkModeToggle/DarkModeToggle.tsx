@@ -1,6 +1,6 @@
 "use client";
 
-import classes from "./DarkmodeToggle.module.css";
+import classes from "./DarkModeToggle.module.css";
 import { useMantineColorScheme, useComputedColorScheme } from "@mantine/core";
 import { FaMoon } from "react-icons/fa6";
 import { FiSun } from "react-icons/fi";
