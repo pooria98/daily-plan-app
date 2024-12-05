@@ -18,5 +18,5 @@ export interface Activities {
   id?: string;
   name: string;
   hour: number;
-  createdAt?: Date;
+  createdAt?: string;
 }

@@ -6,7 +6,10 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.response.use(
-  (response) => response, // Pass through successful responses
+  (response) => {
+    console.log("Response:", response); // Log the response
+    return response; // Pass the response through
+  },
   async (error) => {
     // show errors and notifications
     console.error(error);

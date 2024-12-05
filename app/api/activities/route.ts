@@ -14,8 +14,19 @@ export const GET = async () => {
   }
 
   try {
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0); // Reset time to midnight (start of today)
+    const endOfToday = new Date();
+    endOfToday.setHours(23, 59, 59, 999); // End of today (optional, can be next midnight)
+
     const activities = await prisma.activity.findMany({
-      where: { createdAt: { lt: new Date() }, userId: session?.user.id },
+      where: {
+        createdAt: {
+          gte: startOfToday,
+          lt: endOfToday, // Optional: If you want to be explicit about the end of today
+        },
+        userId: session?.user.id,
+      },
       orderBy: { createdAt: "desc" },
     });
     if (!activities) {
